@@ -24,9 +24,9 @@ router.get('/register', isGueat, (req, res) =>{
 })
 
 router.post('/register', isGueat, async (req, res) =>{
-    const { password, repeatPassword, ...userData} = req.body
-
-    if (password !== repeatPassword) {
+    const { password, rePassword, ...userData} = req.body
+    console.log(req.body)
+    if (password !== rePassword) {
         return res.render('auth/register', {error: "Password missmatch!"})
     }
 
