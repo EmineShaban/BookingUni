@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const BookingSchema = new mongoose.Schema({
+const bookingSchema = new mongoose.Schema({
 //     Name - string (required), unique
 // City - string (required),
 // Image Url - string (required),
@@ -37,5 +37,5 @@ hotel: {
 
 })
 
-const Trip = mongoose.model('Booking', BookingSchema)
-module.exports = Trip
+const Booking = mongoose.model('Booking', bookingSchema)
+module.exports = Booking
