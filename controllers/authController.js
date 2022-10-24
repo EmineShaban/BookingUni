@@ -31,7 +31,7 @@ router.get('/register', isGueat, (req, res) =>{
 
 router.post('/register', isGueat, async (req, res) =>{
     const { password, rePassword, ...userData} = req.body
-    console.log(req.body)
+
     if (password !== rePassword) {
         return res.render('auth/register', {error: "Password missmatch!"})
     }
@@ -39,12 +39,10 @@ router.post('/register', isGueat, async (req, res) =>{
     try{
        const createdUser =  await authServices.create({password, ...userData})
        const token = await authServices.createToken(createdUser)
-       console.log(createdUser)
 
        res.cookie(COOKIE_SESSION_NAME, token, {httpOnly: true})
         res.redirect('/')
     } catch (error){
-        console.log(error)
         return res.render('auth/register', {error: getErrorMessage(error)})
 
     }

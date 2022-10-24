@@ -9,16 +9,18 @@ router.get('/create', isAuth, (req, res) => {
     res.render('booking/create')
 })
 
-// router.post('/create', isAuth, async (req, res) => {
-//     try {
-//         const hotel = await bookingServices.create({ ...req.body, owner: req.user })
-//         await userService.addTrip(req.user._id, hotel._id)
-//         res.redirect('/')
-//     } catch (error) {
-//         console.log(error)
-//         return res.render('/', { error: getErrorMessage(error) })
-//     }
-// })
+router.post('/create', isAuth, async (req, res) => {
+    try {
+        const hotel = await bookingServices.create({ ...req.body, owner: req.user })
+
+        await userService.addTrip(req.user._id, hotel._id)
+        res.redirect('/')
+
+    } catch (error) {
+        // console.log(error)
+        return res.render('/booking/create', { error: getErrorMessage(error) })
+    }
+})
 
 
 
