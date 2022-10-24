@@ -1,24 +1,14 @@
+<section id="viewCatalog" class="background-img">
+    {{#if hotelOffer}}
+    <div class="added-hotels">
+        {{#each hotelOffer}}
+        {{>hotelTemplate}}
+        {{/each}}
+    </div>
 
-        <section id="viewCatalog" class="background-img">
-            {{#each hotelOffer}}
-
-            <div class="added-hotels">
-                {{#if user}}
-                <a href="/booking/{{_id}}/details" class="added-hotel">
-                    {{else}}
-                <a href="/auth/login" class="added-hotel">
-
-                    {{/if}}
-                    <img src="{{imgUrl}}" alt="imgUrl"
-                        class="picture-added-hotel">
-                    <h3>{{hotel}}</h3>
-                    <span>Free rooms: {{freeRooms}}</span>
-                </a>
-                
-            </div>
-            {{else}}
-            <div class="guest">
-                There are no Hotels found...
-            </div>
-            {{/each}}
-        </section>
+    {{else}}
+    <div class="guest">
+        There are no Hotels found...
+    </div>
+    {{/if}}
+</section>

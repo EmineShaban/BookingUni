@@ -12,7 +12,6 @@ router.get('/create', isAuth, (req, res) => {
 router.post('/create', isAuth, async (req, res) => {
     try {
         const hotel = await bookingServices.create({ ...req.body, owner: req.user })
-
         await userService.addTrip(req.user._id, hotel._id)
         res.redirect('/')
 
