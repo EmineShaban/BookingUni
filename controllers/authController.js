@@ -10,12 +10,18 @@ router.get('/login', isGueat, (req, res) =>{
     res.render('auth/login');
 })
 router.post('/login', isGueat, async (req, res) =>{
-    const {username, password} = req.body
-   const user = await authServices.login(username, password)
-   const token = await authServices.createToken(user)
+    try{
+        const {username, password} = req.body
+       const user = await authServices.login(username, password)
+       const token = await authServices.createToken(user)
+    
+       res.cookie(COOKIE_SESSION_NAME, token, {httpOnly: true})
+        res.redirect('/')
 
-   res.cookie(COOKIE_SESSION_NAME, token, {httpOnly: true})
-    res.redirect('/')
+    } catch (error){
+        return res.render('auth/login', {error: getErrorMessage(error)})
+
+    }
 });
 
 
@@ -25,11 +31,9 @@ router.get('/register', isGueat, (req, res) =>{
 
 router.post('/register', isGueat, async (req, res) =>{
     const { password, rePassword, ...userData} = req.body
-    console.log(req.body)
     if (password !== rePassword) {
         return res.render('auth/register', {error: "Password missmatch!"})
     }
-
 
     try{
        const createdUser =  await authServices.create({password, ...userData})
@@ -38,6 +42,7 @@ router.post('/register', isGueat, async (req, res) =>{
        res.cookie(COOKIE_SESSION_NAME, token, {httpOnly: true})
         res.redirect('/')
     } catch (error){
+        console.log(error)
         return res.render('auth/register', {error: getErrorMessage(error)})
 
     }
