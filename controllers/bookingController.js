@@ -3,7 +3,7 @@ const { isAuth, isGueat } = require('../middlewares/authMiddleware')
 const { getErrorMessage } = require('../utils/errorHelper')
 const bookingServices = require('../services/bookingServices')
 const userService = require('../services/userService')
-// const { preloadTrip, isTripAuthor } = require('../middlewares/tripMiddleware')
+const { preloadTrip, isTripAuthor } = require('../middlewares/tripMiddleware')
 
 router.get('/create', isAuth, (req, res) => {
     res.render('booking/create')
@@ -30,7 +30,7 @@ router.get(
     try {
 
         const hotel = await bookingServices.getOne(req.params.hotelId).lean()
-        console.log(hotel)
+        // console.log(hotel)
 
         // const isAuthor = hotel.tripsHistory._id == req.user?._id
         // const isAvailibleSeats = hotel.seats > 0
@@ -38,7 +38,7 @@ router.get(
         // const isAlreadyJoin = hotel.Buddies.map(e => e._id).find(element => element == req.user?._id) == req.user?._id
         res.render('booking/details', { ...hotel })
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.render(`hotel/details`, { error: getErrorMessage(error) })
     }
     })
@@ -54,14 +54,15 @@ router.get(
 //         res.redirect('/')
 //     })
 
-// router.get(
-//     '/:tripID/edit',
-//     isAuth,
-//     preloadTrip,
-//     isTripAuthor,
-//     (req, res) => {
-//         res.render('hotel/edit', { ...req.hotel })
-//     })
+router.get(
+    '/:hotelID/edit',
+    // isAuth,
+    // preloadTrip,
+    // isTripAuthor,
+    (req, res) => {
+        console.log()
+        res.render('booking/edit' )
+    })
 
 
 // router.post(
