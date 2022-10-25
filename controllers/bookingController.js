@@ -22,47 +22,37 @@ router.post('/create', isAuth, async (req, res) => {
 
 
 router.get(
-    '/:hotelId/details',
+    '/:hotelID/details',
     isAuth,
     async (req, res) => {
         try {
-
-            const hotel = await bookingServices.getOne(req.params.hotelId).lean()
-            // console.log(req.params)
-
+            const hotel = await bookingServices.getOne(req.params.hotelID).lean()
+            const user = await userService.getOne(req.user?._id).lean()
             const isAuthor = hotel.owner == req.user?._id
-            // console.log(hotel.owner)
-            // console.log(req.user?._id)
-            // console.log(isAuthor)
-
-
-            // const isAvailibleSeats = hotel.seats > 0
-            // const listBuddies = hotel.Buddies.map(e => e.email).join(', ')
-            // const isAlreadyJoin = hotel.Buddies.map(e => e._id).find(element => element == req.user?._id) == req.user?._id
-            res.render('booking/details', { ...hotel, isAuthor })
+            const isAlreadyJoin = user.bookedHotels?.find(element => element == hotel._id) == hotel._id
+            res.render('booking/details', { ...hotel, isAuthor, isAlreadyJoin })
         } catch (error) {
-            // console.log(error)
             return res.render(`hotel/details`, { error: getErrorMessage(error) })
         }
     })
 
 
 router.get(
-    '/:hotelId/delete',
+    '/:hotelID/delete',
     isAuth,
-    // preloadTrip,
-    // isTripAuthor,
+    isTripAuthor,
     async (req, res) => {
-        await bookingServices.delete(req.params.hotelId)
+        await bookingServices.delete(req.params.hotelID)
         res.redirect('/')
     })
 
 router.get(
-    '/:hotelId/edit',
+    '/:hotelID/edit',
     isAuth,
+    isTripAuthor,
     async (req, res) => {
         try {
-            const hotel = await bookingServices.getOne(req.params.hotelId).lean()
+            const hotel = await bookingServices.getOne(req.params.hotelID).lean()
             res.render('booking/edit', { ...hotel })
         } catch (error) {
             return res.render(`hotel/details`, { error: getErrorMessage(error) })
@@ -71,41 +61,35 @@ router.get(
 
 
 router.post(
-    '/:tripID/edit',
+    '/:hotelID/edit',
     isAuth,
-    // preloadTrip,
-    // isTripAuthor,
+    isTripAuthor,
     async (req, res) => {
         try {
-            await bookingServices.update(req.params.tripID, req.body)
-            res.redirect(`/booking/${req.params.tripID}/details`)
+            await bookingServices.update(req.params.hotelID, req.body)
+            res.redirect(`/booking/${req.params.hotelID}/details`)
         } catch (error) {
             res.render('hotel/edit', { ...req.body, error: getErrorMessage(error) })
         }
     })
 
-// router.get(
-//     '/:tripID/join',
-//     isAuth,
-//     preloadTrip,
-
-//     async (req, res) => {
-//         try {
-
-//         if (req.hotel.seats > 0) {
-//             req.hotel.seats -= 1
-//             await bookingServices.updateOne(req.params.tripID, req.hotel.seats)
-//             await bookingServices.addBuddies(req.hotel._id, req.user)
-//             // console.log(req.user)
-//             res.redirect(`/hotel/${req.params.tripID}/details`)
-//         }
-//     } catch (error) {
-//         res.render(`/hotel/${req.params.tripID}/details`, { ...req.body, error: getErrorMessage(error) })
-//     }
-//     })
-
-    router.get('*', (req, res) => {
-        res.render('404')
+router.get(
+    '/:hotelID/join',
+    isAuth,
+    preloadTrip,
+    async (req, res) => {
+        try {
+            await userService.addHotel(req.user._id, req.hotel._id)
+            req.hotel.freeRooms -= 1
+            await bookingServices.updateRooms(req.params.hotelID, req.hotel)
+            res.redirect(`/booking/${req.params.hotelID}/details`)
+        } catch (error) {
+            res.render(`booking/${req.params.hotelID}/details`, { ...req.body, error: getErrorMessage(error) })
+        }
     })
+
+router.get('*', (req, res) => {
+    res.render('404')
+})
 
 module.exports = router

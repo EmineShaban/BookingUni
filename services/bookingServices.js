@@ -12,3 +12,4 @@ exports.update = (BookingID, BookingData) => Booking.updateOne({ _id: BookingID 
 // // exports.addBuddies = (BookingID, userId) => Booking.updateOne({_id: BookingID}, {$push: {Buddies: userId}})
 
 // exports.getBookingByID = (userId) => Booking.find({BookingsHistory: userId})
+exports.updateRooms = (BookingID, BookingData) => Booking.updateOne({ _id: BookingID }, { $set: BookingData }, { runValidators: true })
