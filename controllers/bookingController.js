@@ -9,6 +9,7 @@ router.get('/create', isAuth, (req, res) => {
     res.render('booking/create')
 })
 
+
 router.post('/create', isAuth, async (req, res) => {
     try {
         const hotel = await bookingServices.create({ ...req.body, owner: req.user })
@@ -20,7 +21,6 @@ router.post('/create', isAuth, async (req, res) => {
 })
 
 
-
 router.get(
     '/:hotelId/details',
     isAuth,
@@ -30,11 +30,16 @@ router.get(
             const hotel = await bookingServices.getOne(req.params.hotelId).lean()
             // console.log(req.params)
 
-            // const isAuthor = hotel.tripsHistory._id == req.user?._id
+            const isAuthor = hotel.owner == req.user?._id
+            // console.log(hotel.owner)
+            // console.log(req.user?._id)
+            // console.log(isAuthor)
+
+
             // const isAvailibleSeats = hotel.seats > 0
             // const listBuddies = hotel.Buddies.map(e => e.email).join(', ')
             // const isAlreadyJoin = hotel.Buddies.map(e => e._id).find(element => element == req.user?._id) == req.user?._id
-            res.render('booking/details', { ...hotel })
+            res.render('booking/details', { ...hotel, isAuthor })
         } catch (error) {
             // console.log(error)
             return res.render(`hotel/details`, { error: getErrorMessage(error) })
@@ -99,14 +104,8 @@ router.post(
 //     }
 //     })
 
-//     router.get('*', (req, res) => {
-//         res.render('404')
-//     })
-
-
-// router.get('/shared', async (req, res) => {
-//     const tripOffer = await bookingServices.getAll().lean()
-//     res.render('hotel/shared', { tripOffer })
-// })
+    router.get('*', (req, res) => {
+        res.render('404')
+    })
 
 module.exports = router
