@@ -14,9 +14,7 @@ router.post('/create', isAuth, async (req, res) => {
         const hotel = await bookingServices.create({ ...req.body, owner: req.user })
         await userService.addTrip(req.user._id, hotel._id)
         res.redirect('/')
-
     } catch (error) {
-        // console.log(error)
         return res.render('/booking/create', { error: getErrorMessage(error) })
     }
 })
@@ -27,57 +25,59 @@ router.get(
     '/:hotelId/details',
     isAuth,
     async (req, res) => {
-    try {
+        try {
 
-        const hotel = await bookingServices.getOne(req.params.hotelId).lean()
-        // console.log(hotel)
+            const hotel = await bookingServices.getOne(req.params.hotelId).lean()
+            // console.log(req.params)
 
-        // const isAuthor = hotel.tripsHistory._id == req.user?._id
-        // const isAvailibleSeats = hotel.seats > 0
-        // const listBuddies = hotel.Buddies.map(e => e.email).join(', ')
-        // const isAlreadyJoin = hotel.Buddies.map(e => e._id).find(element => element == req.user?._id) == req.user?._id
-        res.render('booking/details', { ...hotel })
-    } catch (error) {
-        // console.log(error)
-        return res.render(`hotel/details`, { error: getErrorMessage(error) })
-    }
+            // const isAuthor = hotel.tripsHistory._id == req.user?._id
+            // const isAvailibleSeats = hotel.seats > 0
+            // const listBuddies = hotel.Buddies.map(e => e.email).join(', ')
+            // const isAlreadyJoin = hotel.Buddies.map(e => e._id).find(element => element == req.user?._id) == req.user?._id
+            res.render('booking/details', { ...hotel })
+        } catch (error) {
+            // console.log(error)
+            return res.render(`hotel/details`, { error: getErrorMessage(error) })
+        }
     })
 
-
-// router.get(
-//     '/:tripID/delete',
-//     isAuth,
-//     preloadTrip,
-//     isTripAuthor,
-//     async (req, res) => {
-//         await bookingServices.delete(req.params.tripID)
-//         res.redirect('/')
-//     })
 
 router.get(
-    '/:hotelID/edit',
-    // isAuth,
+    '/:hotelId/delete',
+    isAuth,
     // preloadTrip,
     // isTripAuthor,
-    (req, res) => {
-        console.log()
-        res.render('booking/edit' )
+    async (req, res) => {
+        await bookingServices.delete(req.params.hotelId)
+        res.redirect('/')
+    })
+
+router.get(
+    '/:hotelId/edit',
+    isAuth,
+    async (req, res) => {
+        try {
+            const hotel = await bookingServices.getOne(req.params.hotelId).lean()
+            res.render('booking/edit', { ...hotel })
+        } catch (error) {
+            return res.render(`hotel/details`, { error: getErrorMessage(error) })
+        }
     })
 
 
-// router.post(
-//     '/:tripID/edit',
-//     isAuth,
-//     preloadTrip,
-//     isTripAuthor,
-//     async (req, res) => {
-//         try {
-//             await bookingServices.update(req.params.tripID, req.body)
-//             res.redirect(`/hotel/${req.params.tripID}/details`)
-//         } catch (error) {
-//             res.render('hotel/edit', { ...req.body, error: getErrorMessage(error) })
-//         }
-//     })
+router.post(
+    '/:tripID/edit',
+    isAuth,
+    // preloadTrip,
+    // isTripAuthor,
+    async (req, res) => {
+        try {
+            await bookingServices.update(req.params.tripID, req.body)
+            res.redirect(`/booking/${req.params.tripID}/details`)
+        } catch (error) {
+            res.render('hotel/edit', { ...req.body, error: getErrorMessage(error) })
+        }
+    })
 
 // router.get(
 //     '/:tripID/join',
