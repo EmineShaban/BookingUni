@@ -1,4 +1,6 @@
 const mongoose = require('mongoose')
+const validator = require('validator')
+const URL_PATTERN = /^https?:\/\/.+$/i
 const bookingSchema = new mongoose.Schema({
     //     Name - string (required), unique
     // City - string (required),
@@ -10,14 +12,22 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
+        minlength: [4, 'Hotel name must be at leats 4 characters long!']
     },
     city: {
         type: String,
         required: true,
+        minlength: [3, 'City must be at leats 3 characters long!']
+
     },
     imgUrl: {
         type: String,
         required: true,
+        validate: {
+
+            validator: (value) => URL_PATTERN.test(value),
+            message: "Image URL is not valid!"
+        }
     },
     freeRooms: {
         type: Number,

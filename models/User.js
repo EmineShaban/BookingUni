@@ -4,13 +4,14 @@ const { SALT_ROUNDS } = require('../config/env')
 const userSchema = new mongoose.Schema({
     email: {
         type: String,
-        required: [true, 'Username is required'],
+        required: [true, 'Email is required'],
         unique: true,
     },
     username: {
         type: String,
         required: [true, 'Username is required'],
         unique: true,
+        match: [/^[a-zA-Z0-9]+$/i, 'Username may contain only english letter and numbers']
     },
     password: {
         type: String,
