@@ -9,18 +9,28 @@
 
 <body>
     <div id="container">
+            {{#if error}}
+            <div class="notification errorBox">
+                {{!-- {{#each errors}} --}}
+                <span>{{error}}</span>
+                {{!-- {{/each}} --}}
+            </div>
+            {{/if}}
         {{#if user}}
+        {{!-- {{#if error}}
+        <div class="error">
+            <p>{{error}}</p>
+        </div>
+        {{/if}} --}}
         {{!-- <div>
             <div class="notification loadingBox">
                 Loading …
             </div>
             <div class="notification infoBox">
                 <span>Info</span>
-            </div>
-            <div class="notification errorBox">
-                <span>Error</span>
-            </div>
-        </div> --}}
+            </div> --}}
+
+        </div>
         <nav>
             <div class="left-container">
                 <ul>

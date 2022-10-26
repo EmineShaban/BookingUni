@@ -11,15 +11,24 @@ router.get('/create', isAuth, (req, res) => {
 
 
 router.post('/create', isAuth, async (req, res) => {
+    // console.log(req.body)
+    // if(req.body.hotel.length <4 ){
+    //     return res.render('auth/register', { error: "Hotel name must be at leats 4 characters long!" })
+    // }
+    // if(req.body.city.length <3 ){
+    //     return res.render('auth/register', { error: "Hotel name must be at leats 3 characters long!" })
+    // }
     try {
         const hotel = await bookingServices.create({ ...req.body, owner: req.user })
         await userService.addTrip(req.user._id, hotel._id)
+        // console.log(req.body)
         res.redirect('/')
     } catch (error) {
-        return res.render('/booking/create', { error: getErrorMessage(error) })
+        // const hotel = await bookingServices.create({ ...req.body, owner: req.user })
+// let hotell = req.body
+        return res.render('booking/create', { error: getErrorMessage(error), hotel:req.body })
     }
 })
-
 
 router.get(
     '/:hotelID/details',
